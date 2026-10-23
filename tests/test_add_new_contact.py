@@ -1,6 +1,6 @@
 import pytest
-from contact import Contact
-from application import Application
+from model.contact import Contact
+from fixture.application import Application
 
 
 @pytest.fixture
@@ -11,12 +11,12 @@ def app(request):
 
 
 def test_add_full_contact(app):
-    app.login(username="admin", password="secret")
-    app.create_contact(Contact("John", "Smith", "Engineer", "Meta", "test@mail.com", "11", "October", "1986"))
-    app.logout()
+    app.session.login(username="admin", password="secret")
+    app.contact.create(Contact("John", "Smith", "Engineer", "Meta", "test@mail.com", "11", "October", "1986"))
+    app.session.logout()
 
 
 def test_add_contact_mandatory_fields(app):
-    app.login(username="admin", password="secret")
-    app.create_contact(Contact(firstname="Jack", lastname="Lu", email="test1@mail.com"))
-    app.logout()
+    app.session.login(username="admin", password="secret")
+    app.contact.create(Contact(firstname="Jack", lastname="Lu", email="test1@mail.com"))
+    app.session.logout()

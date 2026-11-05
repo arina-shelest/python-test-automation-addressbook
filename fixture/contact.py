@@ -6,75 +6,63 @@ class ContactHelper:
     def __init__(self, app):
         self.app = app
 
-    def open_add_contact_page(self):
+    def open_contacts_page(self):
         wd = self.app.wd
-        wd.find_element(By.LINK_TEXT, "add new").click()
-
-    def create(self, contact):
-        wd = self.app.wd
-        # open contact page
-        self.open_add_contact_page()
-        # fill contact form
-        self.fill_contact_form(contact)
-        # submit contact creation
-        wd.find_element(By.NAME, "submit").click()
-        # return to home page
-        self.return_to_home_page()
+        wd.find_element(By.LINK_TEXT, "home").click()
 
     def return_to_home_page(self):
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, "home page").click()
 
-    def open_contacts_page(self):
+    def create(self, contact):
         wd = self.app.wd
-        wd.find_element(By.LINK_TEXT, "home").click()
+        self.open_contacts_page()
+        # init contact creation
+        wd.find_element(By.LINK_TEXT, "add new").click()
+        self.fill_contact_form(contact)
+        # submit contact creation
+        wd.find_element(By.NAME, "submit").click()
+        self.return_to_home_page()
 
     def delete_first_contact(self):
         wd = self.app.wd
-        # open contacts page
         self.open_contacts_page()
         # select first contact
         wd.find_element(By.NAME, "selected[]").click()
         # submit deletion
         wd.find_element(By.NAME, "delete").click()
-        # return to home page
         self.return_to_home_page()
 
-    def modify_first_one(self, contact):
+    def modify_first_contact(self, new_contact):
         wd = self.app.wd
-        # open contacts page
         self.open_contacts_page()
-        # select edit option
+        # open modification
         wd.find_element(By.XPATH, "//img[@title='Edit']").click()
-        # fill contact form
-        self.fill_contact_form(contact)
-        # submit contact creation
+        self.fill_contact_form(new_contact)
+        # submit creation
         wd.find_element(By.NAME, "update").click()
-        # return to home page
         self.return_to_home_page()
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
-        wd.find_element(By.NAME, "firstname").clear()
-        wd.find_element(By.NAME, "firstname").send_keys(contact.firstname)
-        wd.find_element(By.NAME, "lastname").click()
-        wd.find_element(By.NAME, "lastname").clear()
-        wd.find_element(By.NAME, "lastname").send_keys(contact.lastname)
-        wd.find_element(By.NAME, "title").click()
-        wd.find_element(By.NAME, "title").clear()
-        wd.find_element(By.NAME, "title").send_keys(contact.title)
-        wd.find_element(By.NAME, "company").click()
-        wd.find_element(By.NAME, "company").clear()
-        wd.find_element(By.NAME, "company").send_keys(contact.company)
-        wd.find_element(By.NAME, "email").click()
-        wd.find_element(By.NAME, "email").clear()
-        wd.find_element(By.NAME, "email").send_keys(contact.email)
+        self.change_field_value("firstname", contact.firstname)
+        self.change_field_value("lastname", contact.lastname)
+        self.change_field_value("title", contact.title)
+        self.change_field_value("company", contact.company)
+        self.change_field_value("email", contact.email)
+        self.change_field_value("byear", contact.byear)
         if contact.bday:
-            wd.find_element(By.NAME, "bday").click()
-            Select(wd.find_element(By.NAME, "bday")).select_by_visible_text(contact.bday)
+            self.select_option("bday", contact.bday)
         if contact.bmonth:
-            wd.find_element(By.NAME, "bmonth").click()
-            Select(wd.find_element(By.NAME, "bmonth")).select_by_visible_text(contact.bmonth)
-        if contact.byear:
-            wd.find_element(By.NAME, "byear").click()
-            wd.find_element(By.NAME, "byear").send_keys(contact.byear)
+            self.select_option("bmonth", contact.bmonth)
+
+    def select_option(self, field_name, text):
+        wd = self.app.wd
+        Select(wd.find_element(By.NAME, field_name)).select_by_visible_text(text)
+
+    def change_field_value(self, field_name, text):
+        wd = self.app.wd
+        if text is not None:
+            wd.find_element(By.NAME, field_name).click()
+            wd.find_element(By.NAME, field_name).clear()
+            wd.find_element(By.NAME, field_name).send_keys(text)

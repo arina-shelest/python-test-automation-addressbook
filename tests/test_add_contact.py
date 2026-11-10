@@ -5,8 +5,8 @@ def test_add_full_contact(app):
     old_contacts = app.contact.get_contact_list()
     contact = Contact("John", "Smith", "Engineer", "Meta", "test@mail.com", "11", "October", "1986")
     app.contact.create(contact)
+    assert len(old_contacts) + 1 == app.contact.count()
     new_contacts = app.contact.get_contact_list()
-    assert len(old_contacts) + 1 == len(new_contacts)
     old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 
@@ -15,7 +15,7 @@ def test_add_contact_mandatory_fields(app):
     old_contacts = app.contact.get_contact_list()
     contact = Contact(firstname="Jack", lastname="Lu", email="test1@mail.com")
     app.contact.create(contact)
+    assert len(old_contacts) + 1 == app.contact.count()
     new_contacts = app.contact.get_contact_list()
-    assert len(old_contacts) + 1 == len(new_contacts)
     old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)

@@ -24,6 +24,7 @@ class GroupHelper:
         # submit group creation
         wd.find_element(By.NAME, "submit").click()
         self.return_to_groups_page()
+        self.group_cache = None
 
     def delete_first_group(self):
         wd = self.app.wd
@@ -32,6 +33,7 @@ class GroupHelper:
         # submit deletion
         wd.find_element(By.NAME, "delete").click()
         self.return_to_groups_page()
+        self.group_cache = None
 
     def modify_first_group(self, new_group):
         wd = self.app.wd
@@ -43,6 +45,7 @@ class GroupHelper:
         # submit modification
         wd.find_element(By.NAME, "update").click()
         self.return_to_groups_page()
+        self.group_cache = None
 
     def select_first_group(self):
         wd = self.app.wd
@@ -66,12 +69,15 @@ class GroupHelper:
         self.open_groups_page()
         return len(wd.find_elements(By.NAME, "selected[]"))
 
+    group_cache = None
+
     def get_group_list(self):
-        wd = self.app.wd
-        self.open_groups_page()
-        groups = []
-        for element in wd.find_elements(By.CSS_SELECTOR, "span.group"):
-            text = element.text
-            id = element.find_element(By.NAME, "selected[]").get_attribute("value")
-            groups.append(Group(name=text, id=id))
-        return groups
+        if self.group_cache is None:
+            wd = self.app.wd
+            self.open_groups_page()
+            self.group_cache = []
+            for element in wd.find_elements(By.CSS_SELECTOR, "span.group"):
+                text = element.text
+                id = element.find_element(By.NAME, "selected[]").get_attribute("value")
+                self.group_cache.append(Group(name=text, id=id))
+        return list(self.group_cache)

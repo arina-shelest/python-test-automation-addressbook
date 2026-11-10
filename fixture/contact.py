@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
+from model.contact import Contact
 
 
 class ContactHelper:
@@ -9,7 +10,7 @@ class ContactHelper:
     def open_contacts_page(self):
         wd = self.app.wd
         if not wd.current_url.endswith("/index.php"):
-             wd.find_element(By.LINK_TEXT, "home").click()
+            wd.find_element(By.LINK_TEXT, "home").click()
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -72,3 +73,15 @@ class ContactHelper:
         wd = self.app.wd
         self.open_contacts_page()
         return len(wd.find_elements(By.NAME, "selected[]"))
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        contacts = []
+        for element in wd.find_elements(By.NAME, "entry"):
+            cells = element.find_elements(By.TAG_NAME, "td")
+            text_firstname = cells[2].text
+            text_lastname = cells[1].text
+            id = element.find_element(By.NAME, "selected[]").get_attribute("value")
+            contacts.append(Contact(firstname=text_firstname, lastname=text_lastname, id=id))
+        return contacts

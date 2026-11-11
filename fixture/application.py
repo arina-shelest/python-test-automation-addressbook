@@ -1,3 +1,5 @@
+import os
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from fixture.session import SessionHelper
 from fixture.group import GroupHelper
@@ -6,7 +8,12 @@ from fixture.contact import ContactHelper
 
 class Application:
     def __init__(self):
-        self.wd = webdriver.Chrome()
+        options = Options()
+        if os.getenv("CI") == "true":
+            options.add_argument("--headless")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--no-sandbox")
+        self.wd = webdriver.Chrome(options=options)
         self.wd.implicitly_wait(5)
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)

@@ -23,17 +23,15 @@ for o, arg in opts:
 
 def random_string(prefix, maxlen):
     symbols = string.ascii_letters + string.digits + string.punctuation + " " * 20
-    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(1, maxlen))])
 
 
 testdata = [
                Contact(firstname="", lastname="", email=""),
            ] + [
-               Contact(firstname=firstname, lastname=lastname, title="Engineer", company="Meta", email=email, bday="11",
+               Contact(firstname=random_string("John_", 10), lastname=random_string("Smith_", 10), title="Engineer",
+                       company="Meta", email=random_string("email_", 10), bday="11",
                        bmonth="October", byear="1986")
-               for firstname in [random_string("John_", 10)]
-               for lastname in [random_string("Smith_", 10)]
-               for email in [random_string("email_", 10)]
                for i in range(n)
            ]
 

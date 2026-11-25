@@ -23,7 +23,7 @@ for o, arg in opts:
 
 def random_string(prefix, maxlen):
     symbols = string.ascii_letters + string.digits + string.punctuation + " " * 20
-    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(1, maxlen))])
 
 
 testdata = [
